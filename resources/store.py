@@ -1,16 +1,14 @@
 import uuid
-from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from db import stores
 
-from schemas import StoreSchema
+from schemas import PlainStoreSchema
 
 blp = Blueprint("stores", __name__, description="Operations on stores")
 
 @blp.route('/store/<string:store_id>')
 class Store(MethodView):
-	@blp.response(200, StoreSchema)
+	@blp.response(200, PlainStoreSchema)
 	def get(self, store_id):
 		try:
 			return stores[store_id] #! a specific store based on ID
@@ -27,12 +25,12 @@ class Store(MethodView):
 
 @blp.route("/store")
 class StoreList(MethodView):
-	@blp.response(201, StoreSchema(many=True))
+	@blp.response(201, PlainStoreSchema(many=True))
 	def get(self):
 		return stores.values() #! all stores
 
-	@blp.arguments(StoreSchema)
-	@blp.response(200, StoreSchema)
+	@blp.arguments(PlainStoreSchema)
+	@blp.response(200, PlainStoreSchema)
 	def post(self, store_data):
 		for store in stores.values():
 			if store_data["name"] == store["name"]:
