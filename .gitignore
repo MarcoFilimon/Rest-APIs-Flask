@@ -60,16 +60,13 @@ dmypy.json
 # Pyre
 .pyre/
 
-# VS Code
-.vscode/
-
 # Docker
 *.log
 *.pid
 *.seed
 *.pid.lock
 docker-compose.override.yml
-docker-compose.*.yml
+# docker-compose.*.yml
 .docker/
 .dockerignore
 

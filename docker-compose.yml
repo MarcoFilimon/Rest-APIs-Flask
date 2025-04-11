@@ -1,7 +1,16 @@
 services:
   web:
-    build: . # target Dockerfile
+    build: . # target Dockerfile from root
     ports:
-      - "5000:5000"
+      - "5000:5000" # map the port from local machine to the container
     volumes:
-      - .:/app
+      - .:/app # work dir is /app in Dockerfile. This copies and keep in sync cwd with the app directory inside the container.
+
+# Docker Compose allows us to start multiple Docker containers at the same time.
+# specifying configurations for each, as well as dependencies between them.
+# Right now we only have one Docker file, so Docker Compose doesn't really make sense.
+# But as we go through the course, we will begin working with a database.
+# And then it may make sense to use Docker Compose to start our REST
+# API and our database together.
+
+#! If you have Docker Desktop installed, which I recommend, then you already have Docker Compose.

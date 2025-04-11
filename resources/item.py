@@ -27,7 +27,7 @@ class Item(MethodView):
 
     @blp.arguments(ItemUpdateSchema)
     @blp.response(200, ItemSchema)
-    def put(self, item_data, item_id):
+    def put(self, item_data, item_id): #! update item
         try:
             item = items[item_id]
 
@@ -47,7 +47,7 @@ class ItemList(MethodView):
 
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
-    def post(self, item_data):
+    def post(self, item_data): #! create item
         for item in items.values():
             if (
                 item_data["name"] == item["name"]

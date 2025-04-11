@@ -13,7 +13,7 @@ class Store(MethodView):
 	@blp.response(200, StoreSchema)
 	def get(self, store_id):
 		try:
-			return stores[store_id]
+			return stores[store_id] #! a specific store based on ID
 		except KeyError:
 			abort(404, message="Store not found")
 
@@ -29,7 +29,7 @@ class Store(MethodView):
 class StoreList(MethodView):
 	@blp.response(201, StoreSchema(many=True))
 	def get(self):
-		return stores.values()
+		return stores.values() #! all stores
 
 	@blp.arguments(StoreSchema)
 	@blp.response(200, StoreSchema)
