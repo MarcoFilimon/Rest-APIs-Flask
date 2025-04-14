@@ -21,11 +21,10 @@ def create_app(db_url=None):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL", "sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.init_app(app) #! this is the correct way to initialize the app with the db.
+    db.init_app(app) #! initializes the db object with the app object.
 
     with app.app_context():
-        db.create_all()
-        # db.create_all() creates the tables in the database based on the models defined.
+        db.create_all() # creates the tables in the database based on the models defined.
 
     api = Api(app)
 
