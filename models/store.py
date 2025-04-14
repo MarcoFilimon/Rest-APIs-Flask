@@ -10,3 +10,5 @@ class StoreModel(db.Model):
     # lazy="dynamic" allows for further filtering and querying of the items relationship
     items = db.relationship("ItemModel", back_populates="store", lazy="dynamic", cascade="all, delete")
     # cascade="all, delete" means that if a store is deleted, all its items will also be deleted.
+
+    tags = db.relationship("TagModel", back_populates="store", lazy="dynamic")
