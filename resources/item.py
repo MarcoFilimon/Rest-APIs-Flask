@@ -54,9 +54,11 @@ class ItemList(MethodView):
 
         return item
 
-    def delete(self):
+    def delete(self): #! delete all items
         try:
-            db.session.query(ItemModel).delete()  #! Delete all items from the database
+            items = ItemModel.query.all()
+            for item in items:
+                db.session.delete(item)
             db.session.commit()
         except SQLAlchemyError:
             db.session.rollback()  # Rollback in case of an error

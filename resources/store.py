@@ -45,13 +45,14 @@ class StoreList(MethodView):
 
 		return store
 
-	# Delete all stores from the database
-	def delete(self):
+	def delete(self): #! delete all stores
 		try:
-			db.session.query(StoreModel).delete()
+			stores = StoreModel.query.all()
+			for store in stores:
+				db.session.delete(store)
 			db.session.commit()
 		except SQLAlchemyError:
 			db.session.rollback()  # Rollback in case of an error
-			abort(500, message="An error occurred while deleting the items.")
+			abort(500, message="An error occurred while deleting the stores.")
 		return {"message": "All stores have been deleted."}, 200
 
