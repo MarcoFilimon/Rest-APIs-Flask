@@ -17,3 +17,5 @@ class ItemModel(db.Model):
     # store model also has a relationship to the item model.
     # This allows us to access the store associated with an item.
     store = db.relationship("StoreModel", back_populates="items")
+
+    tags = db.relationship("TagModel", secondary="items_tags", back_populates="items")
