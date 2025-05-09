@@ -38,3 +38,10 @@ class TagAndItemSchema(Schema):
     message = fields.Str()
     item = fields.Nested(ItemSchema())
     tag = fields.Nested(TagSchema())
+
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    username = fields.Str(required=True, validate=lambda x: len(x) > 0)
+    password = fields.Str(required=True, load_only=True)  # load_only means that the field is only used for input (not returned to the client)
+    # this load_only can be visualized  when you run "GET" command. if it's present in the response, it means that it's not load_only.
+    # this is a good practice to not expose the password to the client.

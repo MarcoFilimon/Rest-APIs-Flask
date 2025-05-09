@@ -1,5 +1,6 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from flask_jwt_extended import jwt_required
 
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
@@ -11,17 +12,20 @@ blp = Blueprint("Items", __name__, description="Operations on items")
 
 @blp.route("/item/<int:item_id>")
 class Item(MethodView):
+    @jwt_required()
     @blp.response(200, ItemSchema)
     def get(self, item_id):
         item = ItemModel.query.get_or_404(item_id) #! get a specific item based on ID
         return item
 
+    @jwt_required()
     def delete(self, item_id):
         item = ItemModel.query.get_or_404(item_id) #! delete an item based on ID
         db.session.delete(item)
         db.session.commit()
         return {"message": "Item deleted."}, 200
 
+    @jwt_required()
     @blp.arguments(ItemUpdateSchema)
     @blp.response(200, ItemSchema)
     def put(self, item_data, item_id): #! update item
@@ -38,10 +42,12 @@ class Item(MethodView):
 
 @blp.route("/item")
 class ItemList(MethodView):
+    @jwt_required()
     @blp.response(200, ItemSchema(many=True))
     def get(self):
         return ItemModel.query.all() #! get all items
 
+    @jwt_required() #! require JWT token to create an item
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
     def post(self, item_data): #! an create item
@@ -54,6 +60,7 @@ class ItemList(MethodView):
 
         return item
 
+    @jwt_required()
     def delete(self): #! delete all items
         try:
             items = ItemModel.query.all()
