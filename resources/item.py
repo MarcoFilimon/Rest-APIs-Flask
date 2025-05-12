@@ -1,6 +1,6 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt
 
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
@@ -20,6 +20,10 @@ class Item(MethodView):
 
     @jwt_required()
     def delete(self, item_id):
+        #! I can block certain endpoints if they don't have certain privileges.
+        # jwt = get_jwt()
+        # if not jwt.get("is_admin"):
+        #     abort(401, message="Admin privilege required.")
         item = ItemModel.query.get_or_404(item_id) #! delete an item based on ID
         db.session.delete(item)
         db.session.commit()
@@ -47,7 +51,7 @@ class ItemList(MethodView):
     def get(self):
         return ItemModel.query.all() #! get all items
 
-    @jwt_required() #! require JWT token to create an item
+    @jwt_required(fresh=True) #! require JWT token to create an item
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
     def post(self, item_data): #! an create item

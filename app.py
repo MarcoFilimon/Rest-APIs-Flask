@@ -6,6 +6,7 @@ import os
 
 from db import db
 import models
+from blocklist import BLOCKLIST
 
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
@@ -35,6 +36,21 @@ def create_app(db_url=None):
     app.config["JWT_SECRET_KEY"] = "1035321680736365778000684778808813581" # to make sure the JWT tokens are signed and verified correctly.
     jwt = JWTManager(app) #! initializes the JWT manager with the app object.
 
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header, jwt_payload):
+        #! this function checks if the token is in the blocklist.
+        #! if it is, it returns True and the token is revoked.
+        #! if it is not, it returns False and the token is not revoked.
+        return jwt_payload["jti"] in BLOCKLIST
+
+    #! I can add extra information to the JWT token when it is created.
+    #! This is useful for adding user roles or permissions to the token.
+    # @jwt.additional_claims_loader
+    # def add_claims_to_jwt(identity):
+    #     if identity == 1: #! admin user
+    #         return {"is_admin": True}
+    #     return {"is_admin": False}
 
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
@@ -69,6 +85,18 @@ def create_app(db_url=None):
         return (
             jsonify(
                 {"description": "The token has been revoked.", "error": "token_revoked"}
+            ),
+            401,
+        )
+
+    @jwt.needs_fresh_token_loader
+    def token_not_fresh_callback(jwt_header, jwt_payload):
+        return (
+            jsonify(
+                {
+                    "description": "The token is not fresh.",
+                    "error": "fresh_token_required",
+                }
             ),
             401,
         )
