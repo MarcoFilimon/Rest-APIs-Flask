@@ -2,6 +2,7 @@ from flask import Flask
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from flask import jsonify
+from flask_migrate import Migrate
 import os
 
 from db import db
@@ -28,14 +29,11 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app) #! initializes the db object with the app object.
 
-    with app.app_context():
-        db.create_all() # creates the tables in the database based on the models defined.
-
+    migrate = Migrate(app, db) #! initializes the migration object with the app and db objects.
     api = Api(app)
 
     app.config["JWT_SECRET_KEY"] = "1035321680736365778000684778808813581" # to make sure the JWT tokens are signed and verified correctly.
     jwt = JWTManager(app) #! initializes the JWT manager with the app object.
-
 
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, jwt_payload):

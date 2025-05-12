@@ -5,6 +5,7 @@ class ItemModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True) # primary key is automatically indexed by SQLAlchemy (starts from 1)
     name = db.Column(db.String(80), nullable=False) # nullable means that the field cannot be null in the database.
+    description = db.Column(db.String(200), nullable=True) # description is optional, so it can be null.
     price = db.Column(db.Float(precision=2), nullable=False)
 
     # Every item belongs to a store, so we need to define the foreign key relationship.
