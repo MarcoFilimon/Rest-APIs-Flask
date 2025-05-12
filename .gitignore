@@ -42,7 +42,7 @@ venv.bak/
 *.spec
 
 # Flask stuff
-instance/
+# instance/
 .webassets-cache
 
 # Pytest
