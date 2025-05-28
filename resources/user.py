@@ -73,7 +73,7 @@ class UserLogout(MethodView):
     This resource is used to log out a user.
     It adds the JWT token to the blocklist.
     """
-    @jwt_required()
+    # @jwt_required()
     def post(self):
         jti = get_jwt()["jti"] # https://jwt.io/ .. jti is a unique identifier for the token
         BLOCKLIST.add(jti)

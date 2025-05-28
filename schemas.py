@@ -2,6 +2,11 @@
 
 from marshmallow import Schema, fields
 
+
+# To avoid infinite nesting, we are renaming our schemas which don't use nested fields to Plain, such as PlainItemSchema and PlainStoreSchema.
+
+# Then the schemas that do use nesting can be called ItemSchema and StoreSchema, and they inherit from the plain schemas. This reduces duplication and prevents infinite nesting.
+
 class PlainItemSchema(Schema):
 	id = fields.Int(dump_only=True)  # only used to be returning data to the client (field is read-only)
 	name = fields.Str(required=True)
@@ -20,12 +25,16 @@ class ItemUpdateSchema(Schema):
     price = fields.Float()
     store_id = fields.Int()
 
+# This code is used to add extra fields to the item schema.
+# Particularly, fields.Nested means that it will add the fields corresponding to the PlainStoreSchema.
+# dumply_only means that it will only add these fields when we dump (return) the schema in a POST request for example. (python object to JSON)
 class ItemSchema(PlainItemSchema):
     store_id = fields.Int(required=True, load_only=True)
     store = fields.Nested(PlainStoreSchema(), dump_only=True)
     tags = fields.List(fields.Nested(PlainTagSchema()), dump_only=True)
 
 class StoreSchema(PlainStoreSchema):
+    # List() because a store can have multiple items.
     items = fields.List(fields.Nested(PlainItemSchema()), dump_only=True)
     tags = fields.List(fields.Nested(PlainTagSchema()), dump_only=True)
 
